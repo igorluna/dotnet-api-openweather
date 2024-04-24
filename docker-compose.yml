@@ -1,0 +1,23 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      SA_PASSWORD: "1q2w3e4r@#$"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+  mssqltools:
+    image: mcr.microsoft.com/mssql-tools
+    depends_on:
+      - sqlserver
+    volumes:
+      - ./create-tables.sql:/tmp/create-tables.sql
+      - ./scripts/init-database.sh:/tmp/init-database.sh
+    command: /bin/bash ./tmp/init-database.sh
+  # dotnet-api:
+  #     build: 
+  #         context: ./dotnet-api
+  #         dockerfile: Dockerfile
+  #     ports: 
+  #         - "8080:80"
